@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <div class="jumbotron">
+    <div align='center'>
+      <h1 >Welcome to the page for {{user.username}}</h1>
+      <img align='center' src="{{ url_for('static', filename='profile_pics/' + user.profile_image) }}">
+    </div>
+  </div>
+
+
+{% for post in blog_posts.items %}
+
+          <h2><a href="{{ url_for('blog_posts.blog_post', blog_post_id=post.id) }}">{{ post.title }}</a></h2>
+          Written by: <a href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+          <p class="text-muted">Published on: {{ post.date.strftime('%Y-%m-%d') }}</p>
+          <br>
+            <p>{{post.text}}</p>
+          <br>
+
+{% endfor %}
+
+<! -- to loop through the individual blog_posts -->
+<! --Under the blog_posts Blueprint , we set up a view blog_posts which connects to a view id which allows you to click -->
+<! -- for every blog_post we show title of that and author and date -->
+<! -- for page numbers in the specialized pages , check if we are on the same page, if we are
+on same page then items are disabled otherwise its an old page item and they'll click on it -->
+
+
+
+
+</div>
+
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    {# http://flask.pocoo.org/snippets/44/ #}
+
+    {% for page_num in blog_posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if blog_posts.page == page_num %}
+              <li class="page-item disabled">
+                <a class="page-link" href="{{ url_for('users.user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a></li>
+              </li>
+            {% else %}
+              <li class="page-item"><a class="page-link" href="{{ url_for('users.user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a></li>
+            {% endif %}
+    {% endfor %}
+</nav>
+{% endblock content %}
